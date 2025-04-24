@@ -1,0 +1,37 @@
+[project]
+name = "tesi-gtermerissa"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.6.0",
+    "datasets>=3.5.0",
+    "evaluate>=0.4.3",
+    "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.6",
+    "matplotlib>=3.10.1",
+    "nltk>=3.9.1",
+    "seqeval>=1.2.2",
+    "torch>=2.6.0",
+    "transformers[sentencepiece]>=4.51.3",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu124", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu124", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+ignore = ["E741"]
