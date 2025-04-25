@@ -6,12 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "accelerate>=1.6.0",
+    "bitsandbytes>=0.45.5",
     "datasets>=3.5.0",
     "evaluate>=0.4.3",
     "ipykernel>=6.29.5",
     "ipywidgets>=8.1.6",
     "matplotlib>=3.10.1",
     "nltk>=3.9.1",
+    "peft>=0.15.2",
+    "sentencepiece>=0.2.0",
     "seqeval>=1.2.2",
     "torch>=2.6.0",
     "transformers[sentencepiece]>=4.51.3",
