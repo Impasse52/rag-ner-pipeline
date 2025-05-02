@@ -10,3 +10,4 @@ wheels/
 .venv
 
 model/
+idxs_test
