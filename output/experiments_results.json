@@ -1,0 +1,86 @@
+{
+    "deepseek-llm-7b-base": {
+        "precision": 0.6589861751152074,
+        "recall": 0.17676143386897405,
+        "f1": 0.27875243664717353
+    },
+    "Llama-3.1-8B": {
+        "precision": 0.6371359223300971,
+        "recall": 0.6489493201483313,
+        "f1": 0.6429883649724433
+    },
+    "gemma-7b": {
+        "precision": 0.02,
+        "recall": 0.018541409147095178,
+        "f1": 0.019243104554201407
+    },
+    "bert-base-italian-xxl-cased": {
+        "eval_loss": 0.048618119210004807,
+        "eval_precision": 0.9152063312605992,
+        "eval_recall": 0.9209328782707622,
+        "eval_f1": 0.918060674794443,
+        "eval_accuracy": 0.9879339434531418,
+        "eval_runtime": 1.3294,
+        "eval_samples_per_second": 232.439,
+        "eval_steps_per_second": 15.045,
+        "epoch": 10.0
+    },
+    "roberta-base": {
+        "eval_loss": 0.059366703033447266,
+        "eval_precision": 0.874251497005988,
+        "eval_recall": 0.897708216880939,
+        "eval_f1": 0.8858246001103144,
+        "eval_accuracy": 0.9833918373762247,
+        "eval_runtime": 1.8636,
+        "eval_samples_per_second": 165.807,
+        "eval_steps_per_second": 10.732,
+        "epoch": 10.0
+    },
+    "hseBert-it-cased": {
+        "eval_loss": 0.03871193528175354,
+        "eval_precision": 0.9205405405405406,
+        "eval_recall": 0.9357142857142857,
+        "eval_f1": 0.928065395095368,
+        "eval_accuracy": 0.990049504950495,
+        "eval_runtime": 1.5043,
+        "eval_samples_per_second": 205.409,
+        "eval_steps_per_second": 13.295,
+        "epoch": 10.0
+    },
+    "distilbert-base-uncased": {
+        "eval_loss": 0.12311048060655594,
+        "eval_precision": 0.7883597883597884,
+        "eval_recall": 0.8241150442477876,
+        "eval_f1": 0.8058409951325041,
+        "eval_accuracy": 0.9646132999791537,
+        "eval_runtime": 0.9718,
+        "eval_samples_per_second": 317.96,
+        "eval_steps_per_second": 20.58,
+        "epoch": 10.0
+    },
+    "llm_ner_pred_Llama-3.1-8B_2025-04-29_11-31-28": {
+        "precision": 0.6371359223300971,
+        "recall": 0.6489493201483313,
+        "f1": 0.6429883649724433
+    },
+    "llm_ner_pred_gemma-7b-it_2025-05-30_11-24-33": {
+        "precision": 0.5887850467289719,
+        "recall": 0.23362175525339926,
+        "f1": 0.3345132743362832
+    },
+    "llm_ner_pred_deepseek-llm-7b-chat_2025-05-30_11-54-59": {
+        "precision": 0.322,
+        "recall": 0.19901112484548825,
+        "f1": 0.2459893048128342
+    },
+    "llm_ner_pred_deepseek-7b-llm-base-legal_2025-07-28_11-15-00": {
+        "precision": 0.21428571428571427,
+        "recall": 0.0519159456118665,
+        "f1": 0.08358208955223881
+    },
+    "llm_ner_pred_deepseek-llm-7b-base_2025-04-28_14-54-20": {
+        "precision": 0.6589861751152074,
+        "recall": 0.17676143386897405,
+        "f1": 0.27875243664717353
+    }
+}
