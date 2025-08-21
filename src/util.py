@@ -1,5 +1,8 @@
+import re
+from typing import Iterable
 import pandas as pd
 from nltk.tokenize import TreebankWordTokenizer
+import itertools
 
 
 def convert_dataset_to_hf(df: pd.DataFrame):
@@ -76,6 +79,9 @@ def combine_bio_entities(ner_tags):
         file.writelines([json.dumps(item, ensure_ascii=False) + "\n" for item in data])
     """
 
+    # Quit if labels are already in the right format
+    assert "-" in ner_tags[0][2], ValueError("Tags are already in the right format.")
+
     combined = []
     i = 0
     while i < len(ner_tags):
@@ -96,6 +102,53 @@ def combine_bio_entities(ner_tags):
     return combined
 
 
+def process_raw_dataset(raw_ds):
+    # Used to map patterns to tags
+    patterns = [
+        (r"\(\((.*?)\)\)", "PER"),
+        (r"\[\[(.*?)\]\]", "LOC"),
+        (r"\{\{(.*?)\}\}", "ORG"),
+        (r"\<\<(.*?)\>\>", "MISC"),
+    ]
+
+    processed_ds = []
+    for i, item in enumerate(raw_ds):
+        pred, text, labels = item["pred"], item["text"], item["label"]
+        labels_pred = []
+        for pattern, label in patterns:
+            for match in re.finditer(pattern, pred):
+                # Get match delimiters
+                start_idx = match.start()
+                end_idx = match.end()
+
+                # +/- 2 brackets
+                start_idx = match.start() + 2
+                end_idx = match.end() - 2
+
+                labels_pred.append((pred[start_idx:end_idx], label))
+
+        # Combine BIO entities into single entities
+        combined_ent = combine_bio_entities(item["label"])
+
+        # Extract labels from original text
+        labels = []
+        for annotation in combined_ent:
+            start, end, tag = annotation
+            labels.append((text[start:end], tag))
+
+        processed_ds.append(
+            {
+                "idx": i,
+                "text": text,
+                "label": labels,
+                "text_pred": pred,
+                "label_pred": labels_pred,
+            }
+        )
+
+    return processed_ds
+
+
 def replace_all(old: str, to_replace: list, new: str):
     for text in to_replace:
         old = old.replace(text, new)
@@ -106,6 +159,11 @@ def replace_all(old: str, to_replace: list, new: str):
 def evaluate_ner(pred_spans: list, gold_spans: list):
     pred_set = set(map(tuple, pred_spans))
     gold_set = set(map(tuple, gold_spans))
+
+    # print("------------------ PRED ----------------------")
+    # print(pred_set)
+    # print("------------------ TRUE ----------------------")
+    # print(gold_set)
 
     true_positives = pred_set & gold_set
 
@@ -131,3 +189,27 @@ def biluo_to_bio(biluo_tags):
         else:  # for '-' or other errors
             bio_tags.append(tag)
     return bio_tags
+
+
+def flatten(l: Iterable) -> list:
+    return list(itertools.chain.from_iterable(l))
+
+
+def to_list_of_entities(df: pd.DataFrame, idx: int):
+    """
+    Convert list of tags expressed as [start, end, label] into
+    a list of tags expressed as (token, label).
+
+    Input: index of dataframe row
+    """
+    text = df.iloc[idx]["text"]
+    rows = df.iloc[idx]["label"]
+
+    output = []
+    for r in rows:
+        start = r[0]
+        end = r[1]
+        tag = r[2]
+        output.append((text[start:end], tag))
+
+    return output

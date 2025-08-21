@@ -37,14 +37,14 @@
         "epoch": 10.0
     },
     "hseBert-it-cased": {
-        "eval_loss": 0.03871193528175354,
-        "eval_precision": 0.9205405405405406,
-        "eval_recall": 0.9357142857142857,
-        "eval_f1": 0.928065395095368,
-        "eval_accuracy": 0.990049504950495,
-        "eval_runtime": 1.5043,
-        "eval_samples_per_second": 205.409,
-        "eval_steps_per_second": 13.295,
+        "eval_loss": 0.05203123018145561,
+        "eval_precision": 0.8981636060100167,
+        "eval_recall": 0.9196581196581196,
+        "eval_f1": 0.9087837837837838,
+        "eval_accuracy": 0.9857793237505755,
+        "eval_runtime": 1.2906,
+        "eval_samples_per_second": 239.418,
+        "eval_steps_per_second": 15.496,
         "epoch": 10.0
     },
     "distilbert-base-uncased": {
@@ -82,5 +82,45 @@
         "precision": 0.6589861751152074,
         "recall": 0.17676143386897405,
         "f1": 0.27875243664717353
+    },
+    "llm_ner_pred_Llama-3.1-8B_legal_parallel_2025-08-08_10-29-56": {
+        "precision": 0.004310344827586207,
+        "recall": 0.003708281829419036,
+        "f1": 0.00398671096345515
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat_2025-08-09_12-05-43": {
+        "precision": 0.04065934065934066,
+        "recall": 0.04573547589616811,
+        "f1": 0.043048283885980226
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat_2025-08-11_10-53-27": {
+        "precision": 0.04065934065934066,
+        "recall": 0.04573547589616811,
+        "f1": 0.043048283885980226
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-18_15-31-57": {
+        "precision": 0.6420091324200913,
+        "recall": 0.7202868852459017,
+        "f1": 0.6788990825688074
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-19_13-49-57": {
+        "precision": 0.6449480642115203,
+        "recall": 0.6997950819672131,
+        "f1": 0.6712530712530712
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_13-57-13-adjusted": {
+        "precision": 0.6848484848484848,
+        "recall": 0.7757437070938215,
+        "f1": 0.7274678111587983
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_16-17-23": {
+        "precision": 0.7320675105485233,
+        "recall": 0.7940503432494279,
+        "f1": 0.7618002195389683
+    },
+    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_18-58-19": {
+        "precision": 0.7287958115183246,
+        "recall": 0.7963386727688787,
+        "f1": 0.761071623838163
     }
 }
