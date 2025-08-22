@@ -3,10 +3,9 @@ from tqdm import tqdm
 from transformers.models.auto.modeling_auto import AutoModelForCausalLM
 from transformers.models.auto.tokenization_auto import AutoTokenizer
 from transformers.utils.quantization_config import BitsAndBytesConfig
-from transformers.generation.configuration_utils import GenerationConfig
 
 
-def init_model(model_name: str, token: str) -> tuple:
+def init_model(model_name: str, token: str, do_quantization=True) -> tuple:
     quantization_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_compute_dtype=torch.bfloat16,
@@ -16,7 +15,7 @@ def init_model(model_name: str, token: str) -> tuple:
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         device_map="auto",
-        quantization_config=quantization_config,
+        quantization_config=quantization_config if do_quantization else None,
         token=token,
     )
 
@@ -24,9 +23,14 @@ def init_model(model_name: str, token: str) -> tuple:
 
 
 def query_model(model, tokenizer, text, max_new_tokens=2000):
-    input_ids = tokenizer.encode(text, return_tensors="pt").to("cuda")
+    inputs = tokenizer(
+        text,
+        return_tensors="pt",
+    ).to("cuda")
+
     output = model.generate(
-        input_ids,
+        inputs["input_ids"],
+        attention_mask=inputs["attention_mask"],
         max_new_tokens=max_new_tokens,
         pad_token_id=tokenizer.eos_token_id,
         do_sample=True,
