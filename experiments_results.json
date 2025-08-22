@@ -58,77 +58,77 @@
         "eval_steps_per_second": 20.58,
         "epoch": 10.0
     },
-    "llm_ner_pred_Llama-3.1-8B_2025-04-29_11-31-28": {
+    "2025-04-29_11-31-28_llm_ner_pred_Llama-3.1-8B": {
         "precision": 0.6371359223300971,
         "recall": 0.6489493201483313,
         "f1": 0.6429883649724433
     },
-    "llm_ner_pred_gemma-7b-it_2025-05-30_11-24-33": {
+    "2025-05-30_11-24-33_llm_ner_pred_gemma-7b-it": {
         "precision": 0.5887850467289719,
         "recall": 0.23362175525339926,
         "f1": 0.3345132743362832
     },
-    "llm_ner_pred_deepseek-llm-7b-chat_2025-05-30_11-54-59": {
+    "2025-05-30_11-54-59_llm_ner_pred_deepseek-llm-7b-chat": {
         "precision": 0.322,
         "recall": 0.19901112484548825,
         "f1": 0.2459893048128342
     },
-    "llm_ner_pred_deepseek-7b-llm-base-legal_2025-07-28_11-15-00": {
+    "2025-07-28_11-15-00_llm_ner_pred_deepseek-7b-llm-base-legal": {
         "precision": 0.21428571428571427,
         "recall": 0.0519159456118665,
         "f1": 0.08358208955223881
     },
-    "llm_ner_pred_deepseek-llm-7b-base_2025-04-28_14-54-20": {
+    "2025-04-28_14-54-20_llm_ner_pred_deepseek-llm-7b-base": {
         "precision": 0.6589861751152074,
         "recall": 0.17676143386897405,
         "f1": 0.27875243664717353
     },
-    "llm_ner_pred_Llama-3.1-8B_legal_parallel_2025-08-08_10-29-56": {
+    "2025-08-08_10-29-56_llm_ner_pred_Llama-3.1-8B_legal_parallel": {
         "precision": 0.004310344827586207,
         "recall": 0.003708281829419036,
         "f1": 0.00398671096345515
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat_2025-08-09_12-05-43": {
+    "2025-08-09_12-05-43_llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat": {
         "precision": 0.04065934065934066,
         "recall": 0.04573547589616811,
         "f1": 0.043048283885980226
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat_2025-08-11_10-53-27": {
+    "2025-08-11_10-53-27_llm_ner_pred_Llama-3.1-8B-Instruct_legal_parallel_chat": {
         "precision": 0.04065934065934066,
         "recall": 0.04573547589616811,
         "f1": 0.043048283885980226
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-18_15-31-57": {
+    "2025-08-18_15-31-57_llm_ner_pred_Llama-3.1-8B-Instruct": {
         "precision": 0.6420091324200913,
         "recall": 0.7202868852459017,
         "f1": 0.6788990825688074
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-19_13-49-57": {
+    "2025-08-19_13-49-57_llm_ner_pred_Llama-3.1-8B-Instruct": {
         "precision": 0.6449480642115203,
         "recall": 0.6997950819672131,
         "f1": 0.6712530712530712
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_13-57-13-adjusted": {
+    "2025-08-20_13-57-13_llm_ner_pred_Llama-3.1-8B-Instruct-adjusted": {
         "precision": 0.6848484848484848,
         "recall": 0.7757437070938215,
         "f1": 0.7274678111587983
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_16-17-23": {
+    "2025-08-20_16-17-23_llm_ner_pred_Llama-3.1-8B-Instruct": {
         "precision": 0.7320675105485233,
         "recall": 0.7940503432494279,
         "f1": 0.7618002195389683
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-20_18-58-19": {
+    "2025-08-20_18-58-19_llm_ner_pred_Llama-3.1-8B-Instruct": {
         "precision": 0.7287958115183246,
         "recall": 0.7963386727688787,
         "f1": 0.761071623838163
     },
-    "llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-21_15-47-18": {
+    "2025-08-21_15-47-18_llm_ner_pred_Llama-3.1-8B-Instruct": {
         "precision": 0.7489316239316239,
         "recall": 0.8020594965675057,
         "f1": 0.7745856353591162
     },
-    "llm_ner_pred_gemma-3-4b-it_2025-08-22_00-35-20": {
+    "2025-08-22_00-35-20_llm_ner_pred_gemma-3-4b-it": {
         "precision": 0.6750261233019854,
         "recall": 0.7391304347826086,
         "f1": 0.7056253413435281

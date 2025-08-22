@@ -6,9 +6,8 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments
 .venv
-
-models/
-idxs_test
 .env
+models/
+data/
+output/

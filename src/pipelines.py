@@ -4,7 +4,7 @@ from itertools import chain
 
 from sklearn.model_selection import train_test_split
 
-from llm import extract_ner, init_model
+from models import extract_ner, init_llm
 from util import evaluate_ner, process_raw_dataset
 
 
@@ -65,7 +65,7 @@ def do_llm_ner(
     """
 
     # Load model and tokenizer
-    model, tokenizer = init_model(
+    model, tokenizer = init_llm(
         model_name,
         hf_token,
         do_quantization=do_quantization,
@@ -90,7 +90,7 @@ def do_llm_ner(
 
     # Save predictions to file
     model_name = model_name.replace("../", "")
-    output_file = f"../output/llm_ner_pred_{model_name.split('/')[-1]}_{dt}.txt"
+    output_file = f"../output/{dt}_llm_ner_pred_{model_name.split('/')[-1]}.txt"
     with open(output_file, "w") as test_f:
         json.dump(test_data, test_f)
         print(f"Saved raw predictions to {output_file}")
@@ -145,7 +145,7 @@ def do_llm_ner(
     print("Token-level results (token only, no label)")
     print(tokenlevel_results)
 
-    results_path = "../output/experiments_results.json"
+    results_path = "../experiments_results.json"
 
     # ----- Output -----
     # Load existing results

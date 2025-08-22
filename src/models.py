@@ -5,7 +5,7 @@ from transformers.models.auto.tokenization_auto import AutoTokenizer
 from transformers.utils.quantization_config import BitsAndBytesConfig
 
 
-def init_model(model_name: str, token: str, do_quantization=True) -> tuple:
+def init_llm(model_name: str, token: str, do_quantization=True) -> tuple:
     quantization_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_compute_dtype=torch.bfloat16,
@@ -22,7 +22,7 @@ def init_model(model_name: str, token: str, do_quantization=True) -> tuple:
     return model, tokenizer
 
 
-def query_model(model, tokenizer, text, max_new_tokens=2000):
+def query_llm(model, tokenizer, text, max_new_tokens=2000):
     inputs = tokenizer(
         text,
         return_tensors="pt",
@@ -51,7 +51,7 @@ def extract_ner(model, tokenizer, prompt, dataset):
     pred = []
     for sent in tqdm(dataset):
         query = create_query(prompt, sent["text"])
-        response = query_model(model, tokenizer, query)
+        response = query_llm(model, tokenizer, query)
 
         pred.append(response.split("Output: \n")[-1])
 
