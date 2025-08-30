@@ -45,7 +45,7 @@ Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stre
 # best
 guidelines_llama3 = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
+Sei un annotatore NER specializzato in testi giuridici. Devi effettuare Named Entity Recognition (NER) sul testo in input.
 Le entità devono essere circondate dai seguenti indicatori:
 - Person (PER): (( ... ))
 - Location (LOC): [[ ... ]]
@@ -87,6 +87,7 @@ Devi seguire le seguenti linee guida:
     - Non consiglio il ristorante in [[Via delle Ginestre]].
     - Ci vogliono 15 minuti sulla [[A-17]].
     - Se viaggiassi dalla [[Pianeta Novera]] a [[Pianeta Aster]], dormirei.
+    - L'[[Aereoporto di Milano]] è molto grande.
   - 4.3.2. Annota descrittori solo se fanno parte del nome:
     - Vive nella [[Alta Valdoria]].
     - I miei posti preferiti: [[Valdoria Occidentale]], [[Sudvalle]].
@@ -112,13 +113,14 @@ Devi seguire le seguenti linee guida:
   - 4.7.1. Esempi di annotazione:
     - Escludi il marcatore di possesso: L’ufficio di ((Lorenzo Bianchi)).
     - Annota separatamente possessore e posseduto: L’ufficio di ((Chiara Moretti)) in [[Sportlandia]].
-    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Andrea Moretti)). 
+    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Dalla Chiesa)). 
     - Non annotare quando il termine indica il ruolo: Il governatore guidava l’auto.
     - Annota entità multiple separatamente: ((Lorenzo Bianchi)) e ((Matteo Ricci))
     - Includi i numeri: [[10 Via delle Ginestre]], {{Quartetto delle Valli}}
     - Includi tutto il token se parte del nome: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
     - Annota la combinazione come un’unica entità: Nato a [[Borgoforte]].
 
+IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input, senza modificare alcuna parola. Non cambiare il casing del testo. Non invertire nomi e cognomi.
 IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
 
 Input: 
@@ -404,3 +406,377 @@ L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'ono
 Output: 
 L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n
 """
+
+guidelines_llama3_noexamples = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
+Le entità devono essere circondate dai seguenti indicatori:
+- Person (PER): (( ... ))
+- Location (LOC): [[ ... ]]
+- Organization (ORG): {{ ... }}
+- Miscellaneous (MISC): << ... >>
+
+Devi seguire le seguenti linee guida:
+1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
+2. Tutti i nomi di persone, di organizzazioni e luoghi presenti nel testo devono essere annotati. 
+3. Le parole devono essere o devono contenere dei nomi propri:
+  - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
+  - I nomi potrebbero includere parole che non sono nomi propri, come ad esempio "Davide Ferri"
+  - "Porto di Levante" è il nome di un posto ma è composto da due parole comuni consecutive: "pearl" e "harbor"
+  - L'entità a cui si riferisce deve essere costante nel tempo: "il portiere del Borgoforte Calcio" non è un nome di persona, dato che cambierà nel tempo, mentre "Elisa Romano" è un nome dato che l'entità a cui si riferisce non cambia
+4. Annoterai entità utilizzando le seguenti etichette: Persona (PER), Organizzazione (ORG), Luogo (LOC) e Miscellanee (MISC).
+  - 4.1.1. Annota con PER i nomi di persone reali o personaggi di fantasia.
+    - 10 migliori sonetti di ((Lorenzo Bianchi)).
+    - Sei cattivo, ((Signor Rossi)).
+    - Mi ricorda la nonna di ((Cappuccetto Rosso)).
+  - 4.1.2. Annota sempre i cognomi, anche se si riferiscono a più persone:
+    - Siamo stati invitati a casa dei ((Famiglia Bellini)).
+    - E, non invitati, i ((Fratelli Marini)).
+  - 4.2.1. Annota con ORG ogni gruppo nominato di persone: aziende, istituzioni, organizzazioni, gruppi musicali, squadre sportive, sindacati, partiti politici ecc.
+    - {{Rete Civica Tirrenica}} ha comprato {{Rete Servizi Valdoria}}.
+    - {{Studio Legale Ferri}} ha creato I Mostri del Borgo
+    - Il {{Agenzia Nazionale per la Sicurezza}} è un gruppo centrale nel governo degli [[Repubblica di Valdoria]].
+    - Dopo aver lasciato il {{Partito Civico Nazionale}}, ((Lorenzo Bianchi)) guiderà la {{Aero Tirrena}}.
+  - 4.2.2. Annota come ORG i nomi di luoghi quando si riferiscono a squadre o unità amministrative:
+    - {{Bellacosta}} ha perso contro {{Montechiaro}}.
+    - {{San Rinaldo}} ha annunciato la revoca delle restrizioni.
+  - 4.2.3. Annota i designatori aziendali come parte del nome (Co., Ltd., ecc.). 
+  - 4.2.4. Annota i marchi come ORG solo se indicano l’organizzazione:
+    - {{Autovetture Lario}} ha confermato le nuove taglie.
+  - 4.3.1. Annota con LOC: luoghi geografici, edifici, infrastrutture, ristoranti, hotel, attrazioni turistiche, ospedali, negozi, indirizzi, strade, oceani, montagne, pianeti, parchi, luoghi di fantasia.
+    - [[Valdoria]] è vicina alla [[Sportlandia]].
+    - Ho una prenotazione al [[Caffè del Borgo]].
+    - La [[Chiesa di San Michele]] terrà messe di Pasqua.
+    - Il [[Golfo di Ponente]] è azzurro al mattino.
+    - Non consiglio il ristorante in [[Via delle Ginestre]].
+    - Ci vogliono 15 minuti sulla [[A-17]].
+    - Se viaggiassi dalla [[Pianeta Novera]] a [[Pianeta Aster]], dormirei.
+  - 4.3.2. Annota descrittori solo se fanno parte del nome:
+    - Vive nella [[Alta Valdoria]].
+    - I miei posti preferiti: [[Valdoria Occidentale]], [[Sudvalle]].
+  - 4.3.3. Annota gli indirizzi postali come un’unica unità:
+    - [[5900 Via del Mercato, Borgoforte]]
+    - [[Sede di Borgoforte, 1000 Viale delle Querce TPS-3165 Borgoforte MN 55403, Repubblica di Valdoria]].
+    - [[Tecnologie Valdoria Via delle Querce 12, Ravenna, Valdoria]].
+  - 4.4.1. Annota con Miscellanee (MISC) gli elementi che sembrano entità ma non rientrano in PER, ORG o LOC.
+  - 4.4.2. Usa MISC per nazionalità e lingue:
+    - Il <<diplomatico dimostrativo>> parlava <<valdorio>>.
+  - 4.4.3. Usa MISC per marchi come etichetta di prodotto:
+    - Non compro un <<Motori Valsena>> Watch.
+    - Mio padre preferiva <<Velox>> a <<Aurora Motors>>.
+  - 4.5.1. L'ambiguità è comune. Risolvila seguendo queste regole in ordine di priorità:
+    - Scegli il tipo in base al contesto locale della frase.
+    - Presumi che ogni entità abbia un significato letterale di base.
+    - In caso di ambiguità reale o mancanza di contesto, scegli il significato letterale.
+    - Se il contesto non aiuta, scegli l’uso più comune.
+  - 4.6.1. Chiediti: se dovessi linkare questa entità su Enciclopedia Aperta, a quale pagina andrebbe? Esempi:
+    - Bellacosta è in cima alla classifica → annota come ORG (contesto: sport).
+    - Non vedo l'ora di visitare Montechiaro → annota come LOC (significato letterale).
+    - Matteo Ricci è il mio preferito → potrebbe essere PER o LOC; scegli PER (uso più comune).
+  - 4.7.1. Esempi di annotazione:
+    - Escludi il marcatore di possesso: L’ufficio di ((Lorenzo Bianchi)).
+    - Annota separatamente possessore e posseduto: L’ufficio di ((Chiara Moretti)) in [[Sportlandia]].
+    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Andrea Moretti)). 
+    - Non annotare quando il termine indica il ruolo: Il governatore guidava l’auto.
+    - Annota entità multiple separatamente: ((Lorenzo Bianchi)) e ((Matteo Ricci))
+    - Includi i numeri: [[10 Via delle Ginestre]], {{Quartetto delle Valli}}
+    - Includi tutto il token se parte del nome: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
+    - Annota la combinazione come un’unica entità: Nato a [[Borgoforte]].
+
+IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
+"""
+
+
+guidelines_mistral = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
+Le entità devono essere circondate dai seguenti indicatori:
+- Person (PER): (( ... ))
+- Location (LOC): [[ ... ]]
+- Organization (ORG): {{ ... }}
+- Miscellaneous (MISC): << ... >>
+
+Devi seguire le seguenti linee guida:
+1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
+2. Tutti i nomi di persone, di organizzazioni e luoghi presenti nel testo devono essere annotati. 
+3. Le parole devono essere o devono contenere dei nomi propri:
+  - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
+  - I nomi potrebbero includere parole che non sono nomi propri, come ad esempio "Davide Ferri"
+  - "Porto di Levante" è il nome di un posto ma è composto da due parole comuni consecutive: "pearl" e "harbor"
+  - L'entità a cui si riferisce deve essere costante nel tempo: "il portiere del Borgoforte Calcio" non è un nome di persona, dato che cambierà nel tempo, mentre "Elisa Romano" è un nome dato che l'entità a cui si riferisce non cambia
+4. Annoterai entità utilizzando le seguenti etichette: Persona (PER), Organizzazione (ORG), Luogo (LOC) e Miscellanee (MISC).
+  - 4.1.1. Annota con PER i nomi di persone reali o personaggi di fantasia.
+    - 10 migliori sonetti di ((Lorenzo Bianchi)).
+    - Sei cattivo, ((Signor Rossi)).
+    - Mi ricorda la nonna di ((Cappuccetto Rosso)).
+  - 4.1.2. Annota sempre i cognomi, anche se si riferiscono a più persone:
+    - Siamo stati invitati a casa dei ((Famiglia Bellini)).
+    - E, non invitati, i ((Fratelli Marini)).
+  - 4.2.1. Annota con ORG ogni gruppo nominato di persone: aziende, istituzioni, organizzazioni, gruppi musicali, squadre sportive, sindacati, partiti politici ecc.
+    - {{Rete Civica Tirrenica}} ha comprato {{Rete Servizi Valdoria}}.
+    - {{Studio Legale Ferri}} ha creato I Mostri del Borgo
+    - Il {{Agenzia Nazionale per la Sicurezza}} è un gruppo centrale nel governo degli [[Repubblica di Valdoria]].
+    - Dopo aver lasciato il {{Partito Civico Nazionale}}, ((Lorenzo Bianchi)) guiderà la {{Aero Tirrena}}.
+  - 4.2.2. Annota come ORG i nomi di luoghi quando si riferiscono a squadre o unità amministrative:
+    - {{Bellacosta}} ha perso contro {{Montechiaro}}.
+    - {{San Rinaldo}} ha annunciato la revoca delle restrizioni.
+  - 4.2.3. Annota i designatori aziendali come parte del nome (Co., Ltd., ecc.). 
+  - 4.2.4. Annota i marchi come ORG solo se indicano l’organizzazione:
+    - {{Autovetture Lario}} ha confermato le nuove taglie.
+  - 4.3.1. Annota con LOC: luoghi geografici, edifici, infrastrutture, ristoranti, hotel, attrazioni turistiche, ospedali, negozi, indirizzi, strade, oceani, montagne, pianeti, parchi, luoghi di fantasia.
+    - [[Valdoria]] è vicina alla [[Sportlandia]].
+    - Ho una prenotazione al [[Caffè del Borgo]].
+    - La [[Chiesa di San Michele]] terrà messe di Pasqua.
+    - Il [[Golfo di Ponente]] è azzurro al mattino.
+    - Non consiglio il ristorante in [[Via delle Ginestre]].
+    - Ci vogliono 15 minuti sulla [[A-17]].
+    - Se viaggiassi dalla [[Pianeta Novera]] a [[Pianeta Aster]], dormirei.
+    - L'[[Aereoporto di Milano]] è molto grande.
+  - 4.3.2. Annota descrittori solo se fanno parte del nome:
+    - Vive nella [[Alta Valdoria]].
+    - I miei posti preferiti: [[Valdoria Occidentale]], [[Sudvalle]].
+  - 4.3.3. Annota gli indirizzi postali come un’unica unità:
+    - [[5900 Via del Mercato, Borgoforte]]
+    - [[Sede di Borgoforte, 1000 Viale delle Querce TPS-3165 Borgoforte MN 55403, Repubblica di Valdoria]].
+    - [[Tecnologie Valdoria Via delle Querce 12, Ravenna, Valdoria]].
+  - 4.4.1. Annota con Miscellanee (MISC) gli elementi che sembrano entità ma non rientrano in PER, ORG o LOC.
+  - 4.4.2. Usa MISC per nazionalità e lingue:
+    - Il <<diplomatico dimostrativo>> parlava <<valdorio>>.
+  - 4.4.3. Usa MISC per marchi come etichetta di prodotto:
+    - Non compro un <<Motori Valsena>> Watch.
+    - Mio padre preferiva <<Velox>> a <<Aurora Motors>>.
+  - 4.5.1. L'ambiguità è comune. Risolvila seguendo queste regole in ordine di priorità:
+    - Scegli il tipo in base al contesto locale della frase.
+    - Presumi che ogni entità abbia un significato letterale di base.
+    - In caso di ambiguità reale o mancanza di contesto, scegli il significato letterale.
+    - Se il contesto non aiuta, scegli l’uso più comune.
+  - 4.6.1. Chiediti: se dovessi linkare questa entità su Enciclopedia Aperta, a quale pagina andrebbe? Esempi:
+    - Bellacosta è in cima alla classifica → annota come ORG (contesto: sport).
+    - Non vedo l'ora di visitare Montechiaro → annota come LOC (significato letterale).
+    - Matteo Ricci è il mio preferito → potrebbe essere PER o LOC; scegli PER (uso più comune).
+  - 4.7.1. Esempi di annotazione:
+    - Escludi il marcatore di possesso: L’ufficio di ((Lorenzo Bianchi)).
+    - Annota separatamente possessore e posseduto: L’ufficio di ((Chiara Moretti)) in [[Sportlandia]].
+    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Dalla Chiesa)). 
+    - Non annotare quando il termine indica il ruolo: Il governatore guidava l’auto.
+    - Annota entità multiple separatamente: ((Lorenzo Bianchi)) e ((Matteo Ricci))
+    - Includi i numeri: [[10 Via delle Ginestre]], {{Quartetto delle Valli}}
+    - Includi tutto il token se parte del nome: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
+    - Annota la combinazione come un’unica entità: Nato a [[Borgoforte]].
+
+IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input, senza modificare alcuna parola. Non cambiare il casing del testo. Non invertire nomi e cognomi.
+IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
+
+Input: 
+Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+Output: 
+Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a {{Consorzio Civico Tirrenico}} all’epoca della strage di [[Marina Alta]], era emerso che il capomandamento di [[Valleverde]] o [[Borgoselva]] era ((Marco Bellini)), il quale, essendo detenuto, aveva nominato come sostituto ((Andrea Moretti)).<|eot_id|>
+
+Input: 
+L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole Elena Ricci non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole Antonio Ferraro.\n<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+Output: 
+L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n<|eot_id|>
+"""
+
+guidelines_messages = """
+Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
+Le entità devono essere circondate dai seguenti indicatori:
+- Person (PER): (( ... ))
+- Location (LOC): [[ ... ]]
+- Organization (ORG): {{ ... }}
+- Miscellaneous (MISC): << ... >>
+
+Devi seguire le seguenti linee guida:
+1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
+2. Tutti i nomi di persone, di organizzazioni e luoghi presenti nel testo devono essere annotati. 
+3. Le parole devono essere o devono contenere dei nomi propri:
+  - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
+  - I nomi potrebbero includere parole che non sono nomi propri, come ad esempio "Davide Ferri"
+  - "Porto di Levante" è il nome di un posto ma è composto da due parole comuni consecutive: "pearl" e "harbor"
+  - L'entità a cui si riferisce deve essere costante nel tempo: "il portiere del Borgoforte Calcio" non è un nome di persona, dato che cambierà nel tempo, mentre "Elisa Romano" è un nome dato che l'entità a cui si riferisce non cambia
+4. Annoterai entità utilizzando le seguenti etichette: Persona (PER), Organizzazione (ORG), Luogo (LOC) e Miscellanee (MISC).
+  - 4.1.1. Annota con PER i nomi di persone reali o personaggi di fantasia.
+    - 10 migliori sonetti di ((Lorenzo Bianchi)).
+    - Sei cattivo, ((Signor Rossi)).
+    - Mi ricorda la nonna di ((Cappuccetto Rosso)).
+  - 4.1.2. Annota sempre i cognomi, anche se si riferiscono a più persone:
+    - Siamo stati invitati a casa dei ((Famiglia Bellini)).
+    - E, non invitati, i ((Fratelli Marini)).
+  - 4.2.1. Annota con ORG ogni gruppo nominato di persone: aziende, istituzioni, organizzazioni, gruppi musicali, squadre sportive, sindacati, partiti politici ecc.
+    - {{Rete Civica Tirrenica}} ha comprato {{Rete Servizi Valdoria}}.
+    - {{Studio Legale Ferri}} ha creato I Mostri del Borgo
+    - Il {{Agenzia Nazionale per la Sicurezza}} è un gruppo centrale nel governo degli [[Repubblica di Valdoria]].
+    - Dopo aver lasciato il {{Partito Civico Nazionale}}, ((Lorenzo Bianchi)) guiderà la {{Aero Tirrena}}.
+  - 4.2.2. Annota come ORG i nomi di luoghi quando si riferiscono a squadre o unità amministrative:
+    - {{Bellacosta}} ha perso contro {{Montechiaro}}.
+    - {{San Rinaldo}} ha annunciato la revoca delle restrizioni.
+  - 4.2.3. Annota i designatori aziendali come parte del nome (Co., Ltd., ecc.). 
+  - 4.2.4. Annota i marchi come ORG solo se indicano l’organizzazione:
+    - {{Autovetture Lario}} ha confermato le nuove taglie.
+  - 4.3.1. Annota con LOC: luoghi geografici, edifici, infrastrutture, ristoranti, hotel, attrazioni turistiche, ospedali, negozi, indirizzi, strade, oceani, montagne, pianeti, parchi, luoghi di fantasia.
+    - [[Valdoria]] è vicina alla [[Sportlandia]].
+    - Ho una prenotazione al [[Caffè del Borgo]].
+    - La [[Chiesa di San Michele]] terrà messe di Pasqua.
+    - Il [[Golfo di Ponente]] è azzurro al mattino.
+    - Non consiglio il ristorante in [[Via delle Ginestre]].
+    - Ci vogliono 15 minuti sulla [[A-17]].
+    - Se viaggiassi dalla [[Pianeta Novera]] a [[Pianeta Aster]], dormirei.
+    - L'[[Aereoporto di Milano]] è molto grande.
+  - 4.3.2. Annota descrittori solo se fanno parte del nome:
+    - Vive nella [[Alta Valdoria]].
+    - I miei posti preferiti: [[Valdoria Occidentale]], [[Sudvalle]].
+  - 4.3.3. Annota gli indirizzi postali come un’unica unità:
+    - [[5900 Via del Mercato, Borgoforte]]
+    - [[Sede di Borgoforte, 1000 Viale delle Querce TPS-3165 Borgoforte MN 55403, Repubblica di Valdoria]].
+    - [[Tecnologie Valdoria Via delle Querce 12, Ravenna, Valdoria]].
+  - 4.4.1. Annota con Miscellanee (MISC) gli elementi che sembrano entità ma non rientrano in PER, ORG o LOC.
+  - 4.4.2. Usa MISC per nazionalità e lingue:
+    - Il <<diplomatico dimostrativo>> parlava <<valdorio>>.
+  - 4.4.3. Usa MISC per marchi come etichetta di prodotto:
+    - Non compro un <<Motori Valsena>> Watch.
+    - Mio padre preferiva <<Velox>> a <<Aurora Motors>>.
+  - 4.5.1. L'ambiguità è comune. Risolvila seguendo queste regole in ordine di priorità:
+    - Scegli il tipo in base al contesto locale della frase.
+    - Presumi che ogni entità abbia un significato letterale di base.
+    - In caso di ambiguità reale o mancanza di contesto, scegli il significato letterale.
+    - Se il contesto non aiuta, scegli l’uso più comune.
+  - 4.6.1. Chiediti: se dovessi linkare questa entità su Enciclopedia Aperta, a quale pagina andrebbe? Esempi:
+    - Bellacosta è in cima alla classifica → annota come ORG (contesto: sport).
+    - Non vedo l'ora di visitare Montechiaro → annota come LOC (significato letterale).
+    - Matteo Ricci è il mio preferito → potrebbe essere PER o LOC; scegli PER (uso più comune).
+  - 4.7.1. Esempi di annotazione:
+    - Escludi il marcatore di possesso: L’ufficio di ((Lorenzo Bianchi)).
+    - Annota separatamente possessore e posseduto: L’ufficio di ((Chiara Moretti)) in [[Sportlandia]].
+    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Dalla Chiesa)). 
+    - Non annotare quando il termine indica il ruolo: Il governatore guidava l’auto.
+    - Annota entità multiple separatamente: ((Lorenzo Bianchi)) e ((Matteo Ricci))
+    - Includi i numeri: [[10 Via delle Ginestre]], {{Quartetto delle Valli}}
+    - Includi tutto il token se parte del nome: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
+    - Annota la combinazione come un’unica entità: Nato a [[Borgoforte]].
+
+IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input, senza modificare alcuna parola. Non cambiare il casing del testo. Non invertire nomi e cognomi.
+IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
+
+Input: 
+Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+Output: 
+Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a {{Consorzio Civico Tirrenico}} all’epoca della strage di [[Marina Alta]], era emerso che il capomandamento di [[Valleverde]] o [[Borgoselva]] era ((Marco Bellini)), il quale, essendo detenuto, aveva nominato come sostituto ((Andrea Moretti)).<|eot_id|>
+
+Input: 
+L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole Elena Ricci non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole Antonio Ferraro.\n<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+Output: 
+L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n<|eot_id|>
+"""
+
+
+prompt_start = """
+Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
+Le entità devono essere circondate dai seguenti indicatori:
+- Person (PER): (( ... ))
+- Location (LOC): [[ ... ]]
+- Organization (ORG): {{ ... }}
+- Miscellaneous (MISC): << ... >>
+
+Devi seguire le seguenti linee guida:
+1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
+2. Tutti i nomi di persone, di organizzazioni e luoghi presenti nel testo devono essere annotati. 
+3. Le parole devono essere o devono contenere dei nomi propri:
+  - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
+  - I nomi potrebbero includere parole che non sono nomi propri, come ad esempio "Davide Ferri"
+  - "Porto di Levante" è il nome di un posto ma è composto da due parole comuni consecutive: "pearl" e "harbor"
+  - L'entità a cui si riferisce deve essere costante nel tempo: "il portiere del Borgoforte Calcio" non è un nome di persona, dato che cambierà nel tempo, mentre "Elisa Romano" è un nome dato che l'entità a cui si riferisce non cambia
+4. Annoterai entità utilizzando le seguenti etichette: Persona (PER), Organizzazione (ORG), Luogo (LOC) e Miscellanee (MISC).
+  - 4.1.1. Annota con PER i nomi di persone reali o personaggi di fantasia.
+    - 10 migliori sonetti di ((Lorenzo Bianchi)).
+    - Sei cattivo, ((Signor Rossi)).
+    - Mi ricorda la nonna di ((Cappuccetto Rosso)).
+  - 4.1.2. Annota sempre i cognomi, anche se si riferiscono a più persone:
+    - Siamo stati invitati a casa dei ((Famiglia Bellini)).
+    - E, non invitati, i ((Fratelli Marini)).
+  - 4.2.1. Annota con ORG ogni gruppo nominato di persone: aziende, istituzioni, organizzazioni, gruppi musicali, squadre sportive, sindacati, partiti politici ecc.
+    - {{Rete Civica Tirrenica}} ha comprato {{Rete Servizi Valdoria}}.
+    - {{Studio Legale Ferri}} ha creato I Mostri del Borgo
+    - Il {{Agenzia Nazionale per la Sicurezza}} è un gruppo centrale nel governo degli [[Repubblica di Valdoria]].
+    - Dopo aver lasciato il {{Partito Civico Nazionale}}, ((Lorenzo Bianchi)) guiderà la {{Aero Tirrena}}.
+  - 4.2.2. Annota come ORG i nomi di luoghi quando si riferiscono a squadre o unità amministrative:
+    - {{Bellacosta}} ha perso contro {{Montechiaro}}.
+    - {{San Rinaldo}} ha annunciato la revoca delle restrizioni.
+  - 4.2.3. Annota i designatori aziendali come parte del nome (Co., Ltd., ecc.). 
+  - 4.2.4. Annota i marchi come ORG solo se indicano l’organizzazione:
+    - {{Autovetture Lario}} ha confermato le nuove taglie.
+  - 4.3.1. Annota con LOC: luoghi geografici, edifici, infrastrutture, ristoranti, hotel, attrazioni turistiche, ospedali, negozi, indirizzi, strade, oceani, montagne, pianeti, parchi, luoghi di fantasia.
+    - [[Valdoria]] è vicina alla [[Sportlandia]].
+    - Ho una prenotazione al [[Caffè del Borgo]].
+    - La [[Chiesa di San Michele]] terrà messe di Pasqua.
+    - Il [[Golfo di Ponente]] è azzurro al mattino.
+    - Non consiglio il ristorante in [[Via delle Ginestre]].
+    - Ci vogliono 15 minuti sulla [[A-17]].
+    - Se viaggiassi dalla [[Pianeta Novera]] a [[Pianeta Aster]], dormirei.
+    - L'[[Aereoporto di Milano]] è molto grande.
+  - 4.3.2. Annota descrittori solo se fanno parte del nome:
+    - Vive nella [[Alta Valdoria]].
+    - I miei posti preferiti: [[Valdoria Occidentale]], [[Sudvalle]].
+  - 4.3.3. Annota gli indirizzi postali come un’unica unità:
+    - [[5900 Via del Mercato, Borgoforte]]
+    - [[Sede di Borgoforte, 1000 Viale delle Querce TPS-3165 Borgoforte MN 55403, Repubblica di Valdoria]].
+    - [[Tecnologie Valdoria Via delle Querce 12, Ravenna, Valdoria]].
+  - 4.4.1. Annota con Miscellanee (MISC) gli elementi che sembrano entità ma non rientrano in PER, ORG o LOC.
+  - 4.4.2. Usa MISC per nazionalità e lingue:
+    - Il <<diplomatico dimostrativo>> parlava <<valdorio>>.
+  - 4.4.3. Usa MISC per marchi come etichetta di prodotto:
+    - Non compro un <<Motori Valsena>> Watch.
+    - Mio padre preferiva <<Velox>> a <<Aurora Motors>>.
+  - 4.5.1. L'ambiguità è comune. Risolvila seguendo queste regole in ordine di priorità:
+    - Scegli il tipo in base al contesto locale della frase.
+    - Presumi che ogni entità abbia un significato letterale di base.
+    - In caso di ambiguità reale o mancanza di contesto, scegli il significato letterale.
+    - Se il contesto non aiuta, scegli l’uso più comune.
+  - 4.6.1. Chiediti: se dovessi linkare questa entità su Enciclopedia Aperta, a quale pagina andrebbe? Esempi:
+    - Bellacosta è in cima alla classifica → annota come ORG (contesto: sport).
+    - Non vedo l'ora di visitare Montechiaro → annota come LOC (significato letterale).
+    - Matteo Ricci è il mio preferito → potrebbe essere PER o LOC; scegli PER (uso più comune).
+  - 4.7.1. Esempi di annotazione:
+    - Escludi il marcatore di possesso: L’ufficio di ((Lorenzo Bianchi)).
+    - Annota separatamente possessore e posseduto: L’ufficio di ((Chiara Moretti)) in [[Sportlandia]].
+    - IMPORTANTE: Non annotare i titoli come Presidente, Onorevole, Avvocato, Generale o Dottore, ma annota solo i nomi: Presidente ((Lorenzo Bianchi)); Onorevole ((Matteo Ricci)); Dottor ((Leonardo Ferri)); Avvocato ((Marco Bellini)); Generale ((Dalla Chiesa)). 
+    - Non annotare quando il termine indica il ruolo: Il governatore guidava l’auto.
+    - Annota entità multiple separatamente: ((Lorenzo Bianchi)) e ((Matteo Ricci))
+    - Includi i numeri: [[10 Via delle Ginestre]], {{Quartetto delle Valli}}
+    - Includi tutto il token se parte del nome: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
+    - Annota la combinazione come un’unica entità: Nato a [[Borgoforte]].
+
+IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input, senza modificare alcuna parola. Non cambiare il casing del testo. Non invertire nomi e cognomi.
+IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti."""
+
+prompt_ques1 = """
+
+Input:
+Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti."""
+
+prompt_answ1 = """
+
+Output: 
+Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a {{Consorzio Civico Tirrenico}} all’epoca della strage di [[Marina Alta]], era emerso che il capomandamento di [[Valleverde]] o [[Borgoselva]] era ((Marco Bellini)), il quale, essendo detenuto, aveva nominato come sostituto ((Andrea Moretti))."""
+
+prompt_ques2 = """
+
+Input: 
+L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole Elena Ricci non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole Antonio Ferraro."""
+
+prompt_answ2 = """
+
+Output: 
+L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro))."""
+
+guidelines_messages = [
+    {"role": "system", "content": prompt_start},
+    {"role": "user", "content": prompt_ques1},
+    {"role": "assistant", "content": prompt_answ1},
+    {"role": "user", "content": prompt_ques2},
+    {"role": "assistant", "content": prompt_answ2},
+]
+

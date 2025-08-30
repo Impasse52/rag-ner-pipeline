@@ -1,62 +1,8 @@
 {
-    "deepseek-llm-7b-base": {
+    "2025-04-28_14-54-20_llm_ner_pred_deepseek-llm-7b-base": {
         "precision": 0.6589861751152074,
         "recall": 0.17676143386897405,
         "f1": 0.27875243664717353
-    },
-    "Llama-3.1-8B": {
-        "precision": 0.6371359223300971,
-        "recall": 0.6489493201483313,
-        "f1": 0.6429883649724433
-    },
-    "gemma-7b": {
-        "precision": 0.02,
-        "recall": 0.018541409147095178,
-        "f1": 0.019243104554201407
-    },
-    "bert-base-italian-xxl-cased": {
-        "eval_loss": 0.048618119210004807,
-        "eval_precision": 0.9152063312605992,
-        "eval_recall": 0.9209328782707622,
-        "eval_f1": 0.918060674794443,
-        "eval_accuracy": 0.9879339434531418,
-        "eval_runtime": 1.3294,
-        "eval_samples_per_second": 232.439,
-        "eval_steps_per_second": 15.045,
-        "epoch": 10.0
-    },
-    "roberta-base": {
-        "eval_loss": 0.059366703033447266,
-        "eval_precision": 0.874251497005988,
-        "eval_recall": 0.897708216880939,
-        "eval_f1": 0.8858246001103144,
-        "eval_accuracy": 0.9833918373762247,
-        "eval_runtime": 1.8636,
-        "eval_samples_per_second": 165.807,
-        "eval_steps_per_second": 10.732,
-        "epoch": 10.0
-    },
-    "hseBert-it-cased": {
-        "eval_loss": 0.05203123018145561,
-        "eval_precision": 0.8981636060100167,
-        "eval_recall": 0.9196581196581196,
-        "eval_f1": 0.9087837837837838,
-        "eval_accuracy": 0.9857793237505755,
-        "eval_runtime": 1.2906,
-        "eval_samples_per_second": 239.418,
-        "eval_steps_per_second": 15.496,
-        "epoch": 10.0
-    },
-    "distilbert-base-uncased": {
-        "eval_loss": 0.12311048060655594,
-        "eval_precision": 0.7883597883597884,
-        "eval_recall": 0.8241150442477876,
-        "eval_f1": 0.8058409951325041,
-        "eval_accuracy": 0.9646132999791537,
-        "eval_runtime": 0.9718,
-        "eval_samples_per_second": 317.96,
-        "eval_steps_per_second": 20.58,
-        "epoch": 10.0
     },
     "2025-04-29_11-31-28_llm_ner_pred_Llama-3.1-8B": {
         "precision": 0.6371359223300971,
@@ -77,11 +23,6 @@
         "precision": 0.21428571428571427,
         "recall": 0.0519159456118665,
         "f1": 0.08358208955223881
-    },
-    "2025-04-28_14-54-20_llm_ner_pred_deepseek-llm-7b-base": {
-        "precision": 0.6589861751152074,
-        "recall": 0.17676143386897405,
-        "f1": 0.27875243664717353
     },
     "2025-08-08_10-29-56_llm_ner_pred_Llama-3.1-8B_legal_parallel": {
         "precision": 0.004310344827586207,
@@ -132,5 +73,74 @@
         "precision": 0.6750261233019854,
         "recall": 0.7391304347826086,
         "f1": 0.7056253413435281
+    },
+    "2025-08-25_18-31-18_llm_ner_pred_Llama-3.1-8B-Instruct_noquant": {
+        "precision": 0.7505353319057816,
+        "recall": 0.8020594965675057,
+        "f1": 0.7754424778761062
+    },
+    "2025-08-26_09-18-52_llm_ner_pred_Llama-3.1-8B-Instruct": {
+        "precision": 0.752411575562701,
+        "recall": 0.8032036613272311,
+        "f1": 0.7769784172661871
+    },
+    "bert-base-italian-xxl-cased": {
+        "eval_loss": 0.048618119210004807,
+        "eval_precision": 0.9152063312605992,
+        "eval_recall": 0.9209328782707622,
+        "eval_f1": 0.918060674794443,
+        "eval_accuracy": 0.9879339434531418,
+        "eval_runtime": 1.3294,
+        "eval_samples_per_second": 232.439,
+        "eval_steps_per_second": 15.045,
+        "epoch": 10.0
+    },
+    "distilbert-base-uncased": {
+        "eval_loss": 0.12311048060655594,
+        "eval_precision": 0.7883597883597884,
+        "eval_recall": 0.8241150442477876,
+        "eval_f1": 0.8058409951325041,
+        "eval_accuracy": 0.9646132999791537,
+        "eval_runtime": 0.9718,
+        "eval_samples_per_second": 317.96,
+        "eval_steps_per_second": 20.58,
+        "epoch": 10.0
+    },
+    "hseBert-it-cased": {
+        "eval_loss": 0.05203123018145561,
+        "eval_precision": 0.8981636060100167,
+        "eval_recall": 0.9196581196581196,
+        "eval_f1": 0.9087837837837838,
+        "eval_accuracy": 0.9857793237505755,
+        "eval_runtime": 1.2906,
+        "eval_samples_per_second": 239.418,
+        "eval_steps_per_second": 15.496,
+        "epoch": 10.0
+    },
+    "roberta-base": {
+        "eval_loss": 0.059366703033447266,
+        "eval_precision": 0.874251497005988,
+        "eval_recall": 0.897708216880939,
+        "eval_f1": 0.8858246001103144,
+        "eval_accuracy": 0.9833918373762247,
+        "eval_runtime": 1.8636,
+        "eval_samples_per_second": 165.807,
+        "eval_steps_per_second": 10.732,
+        "epoch": 10.0
+    },
+    "2025-08-26_09-55-53_llm_ner_pred_Llama-3.1-8B-Instruct_noexamples": {
+        "precision": 0.45498783454987834,
+        "recall": 0.6418764302059496,
+        "f1": 0.5325106786900807
+    },
+    "2025-08-26_10-36-28_llm_ner_pred_Llama-3.1-8B-Instruct_noexamples_noquant": {
+        "precision": 0.5595353339787028,
+        "recall": 0.6613272311212814,
+        "f1": 0.6061877294179339
+    },
+    "2026-08-28_09-25-24_llm_ner_pred_Llama-3.1-8B-Instruct_notempsettings": {
+        "precision": 0.6880641925777332,
+        "recall": 0.7848970251716247,
+        "f1": 0.7332977017637627
     }
 }
