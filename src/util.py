@@ -159,6 +159,16 @@ def replace_all(old: str, to_replace: list, new: str):
 def evaluate_ner(pred_spans: list, gold_spans: list):
     pred_set = set(map(tuple, pred_spans))
     gold_set = set(map(tuple, gold_spans))
+    
+    # tmp = []
+    # for p in pred_set:
+    #     tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
+    # pred_set = set(tmp)
+
+    # tmp = []
+    # for p in gold_set:
+    #     tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
+    # gold_set = set(tmp)
 
     # print("------------------ PRED ----------------------")
     # print(pred_set)
