@@ -609,7 +609,7 @@ Le entità devono essere circondate dai seguenti indicatori:
 - Organization (ORG): {{ ... }}
 - Miscellaneous (MISC): << ... >>
 
-Devi seguire le seguenti linee guida:
+Per le annotazioni, devi seguire le seguenti linee guida:
 1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
 2. Le parole devono essere o devono contenere dei nomi propri:
   - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
@@ -653,8 +653,9 @@ Devi seguire le seguenti linee guida:
   - 3.5.4. In caso di ambiguità, scegli il significato più probabile nel contesto giuridico.
   - 3.5.5. È di vitale importanza mantenere sempre l’ordine e la grafia originale senza modificare il testo.
 
-IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input. Riporta i nomi propri come nel testo in input.
-IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
+IMPORTANTE: Per la generazione del testo, devi seguire precisamente le seguenti linee guida:
+  1. Riporta il testo nell'output esattamente come è presente nell'input.
+  2. Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
 
 Input: 
 Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
