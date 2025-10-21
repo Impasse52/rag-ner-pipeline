@@ -121,7 +121,7 @@ def process_raw_dataset(raw_ds):
                 start_idx = match.start()
                 end_idx = match.end()
 
-                # +/- 2 brackets
+                # Add +/- 2 brackets to the indexes
                 start_idx = match.start() + 2
                 end_idx = match.end() - 2
 
@@ -179,8 +179,8 @@ def evaluate_ner(pred_spans: list, gold_spans: list, ignore_order: bool = False)
 
     true_positives = pred_set & gold_set
 
-    precision = len(true_positives) / len(pred_set)  # if pred_set else 0.0
-    recall = len(true_positives) / len(gold_set)  # if gold_set else 0.0
+    precision = len(true_positives) / len(pred_set) if pred_set else 0.0
+    recall = len(true_positives) / len(gold_set) if gold_set else 0.0
 
     f1 = (
         (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
@@ -225,3 +225,27 @@ def to_list_of_entities(df: pd.DataFrame, idx: int):
         output.append((text[start:end], tag))
 
     return output
+
+
+def extract_ner_labels(pred):
+    patterns = [
+        (r"\(\((.*?)\)\)", "PER"),
+        (r"\[\[(.*?)\]\]", "LOC"),
+        (r"\{\{(.*?)\}\}", "ORG"),
+        (r"\<\<(.*?)\>\>", "MISC"),
+    ]
+
+    labels_pred = []
+    for pattern, label in patterns:
+        for match in re.finditer(pattern, pred):
+            # Get match delimiters
+            start_idx = match.start()
+            end_idx = match.end()
+
+            # Add +/- 2 brackets to the indexes
+            start_idx = match.start() + 2
+            end_idx = match.end() - 2
+
+            labels_pred.append((pred[start_idx:end_idx], label))
+
+    return labels_pred

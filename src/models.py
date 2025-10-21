@@ -154,19 +154,17 @@ def extract_ner(model, tokenizer, prompt, dataset, document_store):
 
         response = query_llm(model, tokenizer, query)
         output_pred = response.split("Output: \n")[-1]
-        print(sent["text"])
+        # print(sent["text"])
 
         # print("---------------- INIZIO RESPONSE ----------------")
         # print(response)
         # print("---------------- FINE RESPONSE ----------------")
 
         # Update tqdm output
-        output = f"{output_pred}"
+        # output = f"{output_pred}"
         # print(output)
         # print()
 
         pred.append(output_pred)
-
-        break
 
     return pred
