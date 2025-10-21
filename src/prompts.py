@@ -656,7 +656,9 @@ Devi seguire le seguenti linee guida:
 IMPORTANTE: Riporta il testo nell'output esattamente come è presente nell'input. Riporta i nomi propri come nel testo in input.
 IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
 
-Input: 
+"""
+
+default_examples = """Input: 
 Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 
 Output: 
