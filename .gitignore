@@ -12,3 +12,4 @@ models/
 data/
 output/
 src/prompts.py
+ollama_dl.sh
