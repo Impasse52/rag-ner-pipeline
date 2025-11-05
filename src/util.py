@@ -160,17 +160,19 @@ def evaluate_ner(pred_spans: list, gold_spans: list, ignore_order: bool = False)
     pred_set = set(map(tuple, pred_spans))
     gold_set = set(map(tuple, gold_spans))
 
-    # Ignores order of tokens so that "Mario Leonardo Ferri" == "Leonardo Ferri Mario"
-    if len(pred_spans[0]) > 1 and ignore_order:
-        tmp = []
-        for p in pred_set:
-            tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
-        pred_set = set(tmp)
+    if len(pred_spans) == 0 and len(gold_spans) == 0:
+        return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 
-        tmp = []
-        for p in gold_set:
-            tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
-        gold_set = set(tmp)
+    # Ignores order of tokens so that "Mario Leonardo Ferri" == "Leonardo Ferri Mario"
+    tmp = []
+    for p in pred_set:
+        tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
+    pred_set = set(tmp)
+
+    tmp = []
+    for p in gold_set:
+        tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
+    gold_set = set(tmp)
 
     # print("------------------ PRED ----------------------")
     # print(pred_set)
