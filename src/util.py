@@ -157,11 +157,11 @@ def replace_all(old: str, to_replace: list, new: str):
 
 
 def evaluate_ner(pred_spans: list, gold_spans: list, ignore_order: bool = False):
-    pred_set = set(map(tuple, pred_spans))
-    gold_set = set(map(tuple, gold_spans))
-
     if len(pred_spans) == 0 and len(gold_spans) == 0:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
+
+    pred_set = set(map(tuple, pred_spans))
+    gold_set = set(map(tuple, gold_spans))
 
     # Ignores order of tokens so that "Mario Leonardo Ferri" == "Leonardo Ferri Mario"
     tmp = []
