@@ -229,7 +229,9 @@ Output:
 L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n<end_of_turn>
 """
 
-guidelines_en = """You are a NER annotator. You must perform Named Entity Recognition (NER) on the input text.
+guidelines_en = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a NER annotator. You must perform Named Entity Recognition (NER) on the input text.
 Entities must be surrounded by the following markers:
  - Person (PER): (( ... ))
  - Location (LOC): [[ ... ]]
@@ -237,33 +239,32 @@ Entities must be surrounded by the following markers:
  - Miscellaneous (MISC): << ... >>
 
 You must follow these guidelines:
-1. An annotation is a substring that can be associated with a specific label, such as PER, LOC, ORG, or MISC.
-2. All names of people, organizations, and places in the text must be annotated.
-3. Words must be or must contain proper nouns:
+1. An annotation is a substring that can be associated with a specific label, such as PER, LOC, ORG, or MISC. Not all input sentences contain annotations: don't annotate unless you detect an entity.
+2. Words must be or must contain proper nouns:
   - "Lorenzo Bianchi" consists of two consecutive proper nouns that represent a single entity.
   - Names may include words that are not proper nouns, such as "Davide Ferri".
   - "Porto di Levante" is the name of a place but is composed of two consecutive common words: "pearl" and "harbor".
   - The entity must be constant over time: "the goalkeeper of Borgoforte Calcio" is not a person’s name, since it changes over time, while "Elisa Romano" is a name because the entity it refers to does not change.
-4. You will annotate entities using the following labels: Person (PER), Organization (ORG), Location (LOC), and Miscellaneous (MISC).
-  - 4.1.1. Annotate with PER the names of real people or fictional characters.
+3. You will annotate entities using the following labels: Person (PER), Organization (ORG), Location (LOC), and Miscellaneous (MISC).
+  - 3.1.1. Annotate with PER the names of real people or fictional characters. Examples:
     - 10 best sonnets of ((Lorenzo Bianchi)).
     - You’re a mean one, ((Signor Rossi)).
     - Reminds me of Cappuccetto Rosso’s ((grandmother)).
-  - 4.1.2. Always annotate surnames, even if they refer to multiple people:
+  - 3.1.2. Always annotate surnames, even if they refer to multiple people. Examples:
     - We were invited to the house of the ((Famiglia Bellini)).
     - And, uninvited, the ((Fratelli Marini)).
-  - 4.2.1. Annotate with ORG every named group of people: companies, institutions, organizations, music groups, sports teams, unions, political parties, etc.
+  - 3.2.1. Annotate with ORG every named group of people: companies, institutions, organizations, music groups, sports teams, unions, political parties, etc. Examples:
     - {{Rete Civica Tirrenica}} bought {{Rete Servizi Valdoria}}.
     - {{Studio Legale Ferri}} created I Mostri del Borgo
     - The {{Agenzia Nazionale per la Sicurezza}} is a central group in the government of the [[Repubblica di Valdoria]].
     - After leaving the {{Partito Civico Nazionale}}, ((Lorenzo Bianchi)) will lead {{Aero Tirrena}}.
-  - 4.2.2. Annotate names of places as ORG when they refer to teams or administrative units:
+  - 3.2.2. Annotate names of places as ORG when they refer to teams or administrative units. Examples:
     - {{Bellacosta}} lost against {{Montechiaro}}.
     - {{San Rinaldo}} announced the lifting of restrictions.
-  - 4.2.3. Annotate business designators as part of the name (Co., Ltd., etc.).
-  - 4.2.4. Annotate brands as ORG only when they indicate the organization:
+  - 3.2.3. Annotate business designators as part of the name (Co., Ltd., etc.).
+  - 3.2.4. Annotate brands as ORG only when they indicate the organization. Examples:
     - {{Autovetture Lario}} confirmed the new sizes.
-  - 4.3.1. Annotate with LOC: geographic places, buildings, infrastructure, restaurants, hotels, tourist attractions, hospitals, shops, addresses, streets, oceans, mountains, planets, parks, fictional places.
+  - 3.3.1. Annotate with LOC: geographic places, buildings, infrastructure, restaurants, hotels, tourist attractions, hospitals, shops, addresses, streets, oceans, mountains, planets, parks, fictional places. Examples:
     - [[Valdoria]] is near [[Valdoria]].
     - I have a reservation at [[Caffè del Borgo]].
     - The [[Chiesa di San Michele]] will hold Easter Masses.
@@ -271,29 +272,29 @@ You must follow these guidelines:
     - I don’t recommend the restaurant on [[Via delle Ginestre]].
     - It takes 15 minutes on [[A-17]].
     - If I traveled from [[Planet Novera]] to [[Planet Aster]], I would sleep.
-  - 4.3.2. Annotate descriptors only if they are part of the name:
+  - 3.3.2. Annotate descriptors only if they are part of the name. Examples:
     - Lives in [[Alta Valdoria]].
     - My favorite places: [[Valdoria Occidentale]], [[Sudvalle]].
-  - 4.3.3. Annotate postal addresses as a single unit:
+  - 3.3.3. Annotate postal addresses as a single unit. Examples:
     - [[5900 Via del Mercato, Borgoforte]]
     - [[Sede di Borgoforte, 1000 Viale delle Querce, Borgoforte, VD 00000, Valdoria]].
     - [[Tecnologie Valdoria One Parco Tecnologico Valdoria, Borgoforte, CA, Repubblica di Valdoria]].
-  - 4.4.1. Annotate with Miscellaneous (MISC) elements that look like entities but don’t fall into PER, ORG, or LOC.
-  - 4.4.2. Use MISC for nationalities and languages:
+  - 3.4.1. Annotate with Miscellaneous (MISC) elements that look like entities but don’t fall into PER, ORG, or LOC. 
+  - 3.4.2. Use MISC for nationalities and languages. Examples:
     - The <<valdoriese diplomat>> spoke <<valdoriese>>.
-  - 4.4.3. Use MISC for brands as product labels:
+  - 3.4.3. Use MISC for brands as product labels. Examples:
     - I don’t buy an <<Motori Valsena>> Watch.
     - My father preferred <<Velox>> to <<Aurora Motors>>.
-  - 4.5.1. Ambiguity is common. Resolve it by following these rules in order of priority:
+  - 3.5.1. Ambiguity is common. Resolve it by following these rules in order of priority. Examples:
     - Choose the type based on the local sentence context.
     - Assume each entity has a basic literal meaning.
     - In case of real ambiguity or lack of context, choose the literal meaning.
     - If context doesn’t help, choose the most common usage.
-  - 4.6.1. Ask yourself: if I had to link this entity on Enciclopedia Aperta, which page would it go to? Examples:
+  - 3.6.1. Ask yourself: if I had to link this entity on Enciclopedia Aperta, which page would it go to? Examples:
     - Bellacosta is at the top of the ranking → annotate as ORG (context: sports).
     - I can’t wait to visit Montechiaro → annotate as LOC (literal meaning).
     - Matteo Ricci is my favorite → could be PER or LOC; choose PER (most common usage).
-  - 4.7.1. Annotation examples:
+  - 3.7.1. Annotation examples:
     - Exclude possessive marker: The office of ((Lorenzo Bianchi)).
     - Annotate possessor and possessed separately: The office of ((Chiara Moretti)) in [[Valdoria]].
     - IMPORTANT: Do not annotate titles such as President, Honorable, Lawyer, General, or Doctor, but only the names: President ((Lorenzo Bianchi)); Honorable ((Matteo Ricci)); Doctor ((Leonardo Ferri)); Lawyer ((Marco Bellini)); General ((Andrea Moretti)).
@@ -303,19 +304,8 @@ You must follow these guidelines:
     - Include the whole token if it’s part of the name: [[valdoriese]] {{Fondazione Nuovi Orizzonti}}
     - Annotate the combination as a single entity: Born in [[Borgoforte]].
 
-IMPORTANT: Immediately stop output after the annotated text. Do not provide explanations or comments.
-
-Input: 
-Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.
-
-Output: 
-Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a {{Consorzio Civico Tirrenico}} all’epoca della strage di [[Marina Alta]], era emerso che il capomandamento di [[Valleverde]] o [[Borgoselva]] era ((Marco Bellini)), il quale, essendo detenuto, aveva nominato come sostituto ((Andrea Moretti)).
-
-Input: 
-L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole Elena Ricci non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole Antonio Ferraro.\n
-
-Output: 
-L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n
+IMPORTANT: Output text exactly as it appears in the input text; output names exactly as they appear in the input text.
+IMPORTANT: Immediately stop output after the annotated text. Do not provide explanations or comments.<|eot_id|><|start_header_id|>user<|end_header_id|>  
 """
 
 guidelines_it = """Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.

@@ -5,7 +5,7 @@ from itertools import chain
 from sklearn.model_selection import train_test_split
 
 from models import extract_ner, init_llm
-from util import evaluate_ner, process_raw_dataset
+from util import eval_ner, process_raw_dataset
 
 
 def do_llm_ner(
@@ -60,8 +60,6 @@ def do_llm_ner(
     Notes:
         - Predictions are normalized (stripped and title-cased) before evaluation
           to ensure consistency across models.
-        - If the model name contains `"gemma"`, additional cleaning is applied to
-          remove prompt formatting artifacts.
     """
 
     # Load model and tokenizer
@@ -127,7 +125,7 @@ def do_llm_ner(
     flat_preds = [(w[0].strip().title(), w[1]) for w in flat_preds]
     flat_golds = [(w[0].strip().title(), w[1]) for w in flat_golds]
 
-    results = evaluate_ner(flat_preds, flat_golds)
+    results = eval_ner(flat_preds, flat_golds)
     print("NER evaluation results")
     print(results)
     print()
@@ -141,7 +139,7 @@ def do_llm_ner(
     flat_preds = [w[0].strip().title() for w in flat_preds]
     flat_golds = [w[0].strip().title() for w in flat_golds]
 
-    tokenlevel_results = evaluate_ner(flat_preds, flat_golds)
+    tokenlevel_results = eval_ner(flat_preds, flat_golds)
     print("Token-level results (token only, no label)")
     print(tokenlevel_results)
 

@@ -1,3 +1,4 @@
+from collections import Counter
 import re
 from typing import Iterable
 import pandas as pd
@@ -156,37 +157,47 @@ def replace_all(old: str, to_replace: list, new: str):
     return old
 
 
-def evaluate_ner(pred_spans: list, gold_spans: list, ignore_order: bool = False):
-    if len(pred_spans) == 0 and len(gold_spans) == 0:
+def _sort_words(tokens: list | set) -> list:
+    """Sort words within a string so that multi-word tokens are scored properly.
+    This is necessary due to how LLMs sometimes rewrite multi-word tokens in the
+    wrong order, causing "unfair" evaluations.
+
+    For example, "Mario Leonardo Ferri" and "Leonardo Ferri Mario" are treated as the same entity."""
+
+    tmp = []
+    for w in tokens:
+        tmp.append((" ".join(sorted(w[0].split(" "))), w[1]))
+
+    return tmp
+
+
+def eval_ner(pred: list, true: list):
+    """Evaluate a single NER sample"""
+
+    # Return f1 = 1.0 if both pred and gold are empty
+    if len(pred) == 0 and len(true) == 0:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 
-    pred_set = set(map(tuple, pred_spans))
-    gold_set = set(map(tuple, gold_spans))
+    pred = _sort_words(pred)
+    gold = _sort_words(true)
 
-    # Ignores order of tokens so that "Mario Leonardo Ferri" == "Leonardo Ferri Mario"
-    tmp = []
-    for p in pred_set:
-        tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
-    pred_set = set(tmp)
-
-    tmp = []
-    for p in gold_set:
-        tmp.append((" ".join(sorted((p[0]).split(" "))), p[1]))
-    gold_set = set(tmp)
-
-    # print("------------------ PRED ----------------------")
+    # print("--- Pred ---")
+    # print(pred)
     # print(pred_set)
-    # print("------------------ TRUE ----------------------")
+    # print("--- True ---")
+    # print(true)
     # print(gold_set)
 
-    true_positives = pred_set & gold_set
+    pred_counter = Counter(pred)
+    gold_counter = Counter(gold)
 
-    precision = len(true_positives) / len(pred_set) if pred_set else 0.0
-    recall = len(true_positives) / len(gold_set) if gold_set else 0.0
+    # Elementwise intersection — counts minimum occurrences in both
+    true_positives = pred_counter & gold_counter
 
-    f1 = (
-        (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
-    )
+    tp = sum(true_positives.values())
+    precision = tp / len(pred) if pred else 0.0
+    recall = tp / len(gold) if gold else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
 
     return {"precision": precision, "recall": recall, "f1": f1}
 
