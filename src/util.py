@@ -262,3 +262,34 @@ def extract_ner_labels(pred):
             labels_pred.append((pred[start_idx:end_idx], label))
 
     return labels_pred
+
+
+def replace_with_parentheses(text, entities):
+    """
+    Replace substrings at specified indices with the same text wrapped in (( )).
+
+    Args:
+        text: The original string
+        entities: List of (start, end, tag) tuples
+
+    Returns:
+        Modified string with replacements
+    """
+    # Sort entities by start position in reverse order
+    # This ensures we process from end to start, avoiding index shifts
+    sorted_entities = sorted(entities, key=lambda x: x[0], reverse=True)
+
+    result = text
+    for start, end, tag in sorted_entities:
+        original = result[start:end]
+        if "PER" in tag:
+            replacement = f"(({original}))"
+        elif "LOC" in tag:
+            replacement = f"[[{original}]]"
+        elif "ORG" in tag:
+            replacement = "{{" + original + "}}"
+        elif "MISC" in tag:
+            replacement = f"<<{original}>>"
+        result = result[:start] + replacement + result[end:]
+
+    return result

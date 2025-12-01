@@ -32,6 +32,9 @@ dependencies = [
     "trl>=0.18.0",
     "haystack-ai>=2.17.1",
     "sentence-transformers>=5.1.1",
+    "plotly>=6.5.0",
+    "nbformat>=5.10.4",
+    "levenshtein>=0.27.3",
 ]
 
 [[tool.uv.index]]
