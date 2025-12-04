@@ -4,6 +4,8 @@ from typing import Iterable
 import pandas as pd
 from nltk.tokenize import TreebankWordTokenizer
 import itertools
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 def convert_dataset_to_hf(df: pd.DataFrame):
@@ -293,3 +295,173 @@ def replace_with_parentheses(text, entities):
         result = result[:start] + replacement + result[end:]
 
     return result
+
+
+def draw_bipartite(b: nx.Graph, figsize: tuple = (12, 15), draw_labels: bool = True):
+    # Define colors for each entity type
+    entity_colors = {
+        "PER": "#FF6B6B",  # Red
+        "LOC": "#4ECDC4",  # Teal
+        "ORG": "#95E1D3",  # Light green
+        "MISC": "#FFE66D",  # Yellow
+    }
+
+    # Separate nodes in doc and entity nodes
+    doc_nodes = [n for n in b.nodes() if isinstance(n[0], int)]
+    entity_nodes = [n for n in b.nodes() if not isinstance(n[0], int)]
+
+    # Assign colors to nodes
+    node_colors = []
+    for node in b.nodes():
+        if node[1] != "DOC":
+            # Entity node - color by type
+            entity_type = node[1].upper()
+            node_colors.append(entity_colors.get(entity_type, "#CCCCCC"))
+        else:
+            # Document node - gray
+            node_colors.append("#AAAAAA")
+
+    plt.figure(figsize=figsize)
+
+    # Use bipartite layout
+    pos = nx.drawing.layout.bipartite_layout(b, entity_nodes)
+
+    # Draw nodes with black outline
+    nx.draw_networkx_nodes(
+        b,
+        pos,
+        node_color=node_colors,
+        node_size=100,
+        edgecolors="black",
+        linewidths=0.5,
+    )
+
+    # Draw edges
+    nx.draw_networkx_edges(b, pos, alpha=0.1, width=0.1)
+
+    # Draw labels with offset (below nodes)
+    labels = {}
+    for node in b.nodes():
+        if isinstance(node, tuple):
+            labels[node] = node[0]  # Entity name
+        else:
+            labels[node] = node  # Document ID
+
+    # Draw labels below nodes
+    if draw_labels:
+        label_pos = {k: (v[0], v[1] - 0.01) for k, v in pos.items()}
+        nx.draw_networkx_labels(b, label_pos, labels, font_size=5)
+
+    # Add legend
+    legend_elements = [
+        plt.Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="w",
+            markerfacecolor=color,
+            markersize=10,
+            markeredgecolor="black",
+            markeredgewidth=2,
+            label=entity_type,
+        )
+        for entity_type, color in entity_colors.items()
+    ]
+    legend_elements.append(
+        plt.Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="w",
+            markerfacecolor="#AAAAAA",
+            markersize=10,
+            markeredgecolor="black",
+            markeredgewidth=2,
+            label="Document",
+        )
+    )
+    plt.legend(handles=legend_elements, loc="upper right", fontsize=10)
+
+    plt.title("Entity-Document Bipartite Graph")
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
+
+
+def draw_graph(
+    g: nx.Graph,
+    figsize: tuple = (12, 15),
+    draw_labels: bool = True,
+    node_size: int = 100,
+    label_font_size: int = 5,
+):
+    # define colors for each entity type
+    entity_colors = {
+        "PER": "#FF6B6B",  # RED
+        "LOC": "#4ECDC4",  # TEAL
+        "ORG": "#95E1D3",  # LIGHT GREEN
+        "MISC": "#FFE66D",  # YELLOW
+    }
+
+    # assign colors to nodes
+    node_colors = []
+    for node in g.nodes():
+        if node[1] != "DOC":
+            # entity node - color by type
+            entity_type = node[1].upper()
+            node_colors.append(entity_colors.get(entity_type, "#cccccc"))
+        else:
+            # document node - gray
+            node_colors.append("#aaaaaa")
+
+    plt.figure(figsize=figsize)
+
+    pos = nx.drawing.layout.kamada_kawai_layout(g)
+
+    # Draw nodes
+    nx.draw_networkx_nodes(
+        g,
+        pos,
+        node_color=node_colors,
+        node_size=node_size,
+        edgecolors="black",
+        linewidths=0.5,
+    )
+
+    # Draw edges
+    nx.draw_networkx_edges(g, pos, alpha=0.5, width=0.2)
+
+    # Draw labels with offset (below nodes)
+    labels = {}
+    for node in g.nodes():
+        if isinstance(node, tuple):
+            labels[node] = node[0]  # entity name
+        else:
+            labels[node] = node  # document id
+
+    # Draw labels below nodes
+    label_pos = {k: (v[0], v[1] - 0.02) for k, v in pos.items()}
+    if draw_labels:
+        nx.draw_networkx_labels(g, label_pos, labels, font_size=label_font_size)
+
+    # Add legend
+    legend_elements = [
+        plt.Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="w",
+            markerfacecolor=color,
+            markersize=10,
+            markeredgecolor="black",
+            markeredgewidth=2,
+            label=entity_type,
+        )
+        for entity_type, color in entity_colors.items()
+    ]
+    plt.legend(handles=legend_elements, loc="upper right", fontsize=10)
+
+    plt.title("Entity-Document Projection Graph")
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
