@@ -390,6 +390,7 @@ def draw_bipartite(b: nx.Graph, figsize: tuple = (12, 15), draw_labels: bool = T
 
 def draw_graph(
     g: nx.Graph,
+    title: str,
     figsize: tuple = (12, 15),
     draw_labels: bool = True,
     node_size: int = 100,
@@ -461,7 +462,7 @@ def draw_graph(
     ]
     plt.legend(handles=legend_elements, loc="upper right", fontsize=10)
 
-    plt.title("Entity-Document Projection Graph")
+    plt.title(title)
     plt.axis("off")
     plt.tight_layout()
     plt.show()
