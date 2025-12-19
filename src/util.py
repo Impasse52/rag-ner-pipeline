@@ -1,3 +1,4 @@
+import numpy as np
 from collections import Counter
 import re
 from typing import Iterable
@@ -6,6 +7,7 @@ from nltk.tokenize import TreebankWordTokenizer
 import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
+import rich
 
 
 def convert_dataset_to_hf(df: pd.DataFrame):
@@ -180,6 +182,7 @@ def eval_ner(pred: list, true: list):
     if len(pred) == 0 and len(true) == 0:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 
+    # Preprocessing
     pred = _sort_words(pred)
     gold = _sort_words(true)
 
@@ -202,6 +205,49 @@ def eval_ner(pred: list, true: list):
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
 
     return {"precision": precision, "recall": recall, "f1": f1}
+
+
+def compute_ner_conf_matrix(pred, true, labels=["PER", "LOC", "ORG", "MISC"]):
+    """
+    Compute confusion matrix for each sentence, then sum the matrices cell-wise.
+    """
+
+    matrices = []
+    # For each sentence
+    for idx in range(len(true)):
+        conf_matrix = [[0 for _ in range(len(labels))] for _ in range(len(labels))]
+
+        # Apply preprocessing
+        pred_sorted = _sort_words(pred[idx])
+        true_sorted = _sort_words(true[idx])
+
+        # Create dictionaries mapping text -> label
+        pred_dict = {text: label for text, label in pred_sorted}
+        true_dict = {text: label for text, label in true_sorted}
+
+        # Get all unique entities
+        entities = set(pred_dict.keys()) | set(true_dict.keys())
+
+        for ent in entities:
+            pred_label = pred_dict.get(ent)  # None if not predicted
+            true_label = true_dict.get(ent)  # None if not in gold
+
+            if pred_label and true_label:
+                # Entity was both predicted and in gold standard
+                i = labels.index(pred_label)
+                j = labels.index(true_label)
+
+                conf_matrix[i][j] += 1
+
+        matrices.append(conf_matrix)
+
+    return np.sum(matrices, axis=0, keepdims=True)[0]
+
+
+def print_avg_metrics(y_true, y_pred):
+    scores = [eval_ner(y_true[idx], y_pred[idx]) for idx in range(len(y_true))]
+    avg_metrics = {key: sum(d[key] for d in scores) / len(scores) for key in scores[0]}
+    rich.print(avg_metrics)
 
 
 def biluo_to_bio(biluo_tags):
@@ -354,7 +400,7 @@ def draw_bipartite(b: nx.Graph, figsize: tuple = (12, 15), draw_labels: bool = T
 
     # Add legend
     legend_elements = [
-        plt.Line2D(
+        plt.Line2D(  # type: ignore
             [0],
             [0],
             marker="o",
@@ -368,7 +414,7 @@ def draw_bipartite(b: nx.Graph, figsize: tuple = (12, 15), draw_labels: bool = T
         for entity_type, color in entity_colors.items()
     ]
     legend_elements.append(
-        plt.Line2D(
+        plt.Line2D(  # type: ignore
             [0],
             [0],
             marker="o",
@@ -447,7 +493,7 @@ def draw_graph(
 
     # Add legend
     legend_elements = [
-        plt.Line2D(
+        plt.Line2D(  # type: ignore
             [0],
             [0],
             marker="o",
