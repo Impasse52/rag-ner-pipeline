@@ -252,5 +252,16 @@
         "precision": 0.9075122687806719,
         "recall": 0.8196385952949199,
         "f1": 0.861340021497
+    },
+    "hseBert-it-cased": {
+        "eval_loss": 0.046516772359609604,
+        "eval_precision": 0.9095982142857143,
+        "eval_recall": 0.9141895681435782,
+        "eval_f1": 0.9118881118881118,
+        "eval_accuracy": 0.9868465757413969,
+        "eval_runtime": 0.7869,
+        "eval_samples_per_second": 392.703,
+        "eval_steps_per_second": 25.418,
+        "epoch": 10.0
     }
 }
