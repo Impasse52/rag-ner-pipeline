@@ -512,3 +512,34 @@ def draw_graph(
     plt.axis("off")
     plt.tight_layout()
     plt.show()
+
+
+def compute_average_metrics(metrics_list):
+    """
+    Compute average metrics from a list of metric dictionaries.
+
+    Args:
+        metrics_list: List of dictionaries containing metrics
+
+    Returns:
+        Dictionary with averaged metrics
+    """
+    if not metrics_list:
+        return {}
+
+    # Get all metric names from the first dictionary
+    metric_names = metrics_list[0].keys()
+
+    # Initialize sums
+    sums = {name: 0 for name in metric_names}
+
+    # Sum up all values
+    for metrics in metrics_list:
+        for name in metric_names:
+            sums[name] += metrics[name]
+
+    # Compute averages
+    n = len(metrics_list)
+    averages = {name: sums[name] / n for name in metric_names}
+
+    return averages
