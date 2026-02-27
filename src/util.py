@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 from collections import Counter
 import re
@@ -8,6 +10,85 @@ import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
 import rich
+
+
+def parse_dataset(text):
+    samples = []
+
+    current_input = []
+    current_text = []
+    buffer = []
+    current_tag = None
+    sample_id = 0
+
+    def apply_tag(words, tag):
+        phrase = " ".join(words)
+        tag = tag.lower()
+
+        if "per" in tag:
+            return f"(({phrase}))"
+        elif "loc" in tag:
+            return f"[[{phrase}]]"
+        elif "org" in tag:
+            return "{{" + phrase + "}}"
+        elif "misc" in tag:
+            return f"<<{phrase}>>"
+        else:
+            return phrase
+
+    for line in text.strip().split("\n"):
+        line = line.strip()
+
+        if not line:
+            if buffer:
+                phrase = " ".join(buffer)
+                current_input.append(phrase)
+                current_text.append(apply_tag(buffer, current_tag))
+                buffer = []
+
+            if current_input:
+                samples.append(
+                    {
+                        "id": sample_id,
+                        "input": " ".join(current_input),
+                        "text": " ".join(current_text),
+                    }
+                )
+                sample_id += 1
+
+            current_input = []
+            current_text = []
+            current_tag = None
+            continue
+
+        word, tag = line.split()
+
+        if tag == current_tag:
+            buffer.append(word)
+        else:
+            if buffer:
+                phrase = " ".join(buffer)
+                current_input.append(phrase)
+                current_text.append(apply_tag(buffer, current_tag))
+            buffer = [word]
+            current_tag = tag
+
+    # flush last sample
+    if buffer:
+        phrase = " ".join(buffer)
+        current_input.append(phrase)
+        current_text.append(apply_tag(buffer, current_tag))
+
+    if current_input:
+        samples.append(
+            {
+                "id": sample_id,
+                "input": " ".join(current_input),
+                "text": " ".join(current_text),
+            }
+        )
+
+    return samples
 
 
 def convert_dataset_to_hf(df: pd.DataFrame):
@@ -330,13 +411,13 @@ def replace_with_parentheses(text, entities):
     result = text
     for start, end, tag in sorted_entities:
         original = result[start:end]
-        if "PER" in tag:
+        if "per" in tag:
             replacement = f"(({original}))"
-        elif "LOC" in tag:
+        elif "loc" in tag:
             replacement = f"[[{original}]]"
-        elif "ORG" in tag:
+        elif "org" in tag:
             replacement = "{{" + original + "}}"
-        elif "MISC" in tag:
+        elif "misc" in tag:
             replacement = f"<<{original}>>"
         result = result[:start] + replacement + result[end:]
 
@@ -543,3 +624,33 @@ def compute_average_metrics(metrics_list):
     averages = {name: sums[name] / n for name in metric_names}
 
     return averages
+
+
+def conll_to_jsonl(input_tsv, output_jsonl):
+    with (
+        open(input_tsv, "r", encoding="utf-8") as f_in,
+        open(output_jsonl, "w", encoding="utf-8") as f_out,
+    ):
+        tokens, tags = [], []
+        sent_id = 0
+
+        for line in f_in:
+            line = line.strip()
+            if not line:
+                if tokens:
+                    example = {"id": f"{sent_id}", "tokens": tokens, "ner_tags": tags}
+                    f_out.write(json.dumps(example) + "\n")
+                    sent_id += 1
+                    tokens, tags = [], []
+                continue
+
+            if "\t" not in line:
+                continue
+            token, tag = line.split("\t")
+            tokens.append(token)
+            tags.append(tag)
+
+        # last sentence
+        if tokens:
+            example = {"id": f"{sent_id}", "tokens": tokens, "ner_tags": tags}
+            f_out.write(json.dumps(example) + "\n")

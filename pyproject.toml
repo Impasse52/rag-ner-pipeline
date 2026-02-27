@@ -35,6 +35,7 @@ dependencies = [
     "plotly>=6.5.0",
     "nbformat>=5.10.4",
     "levenshtein>=0.27.3",
+    "memray>=1.19.1",
 ]
 
 [[tool.uv.index]]

@@ -592,7 +592,7 @@ L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l
 
 guidelines_llama3_legal_lite = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-Sei un annotatore NER specializzato in testi giuridici. Devi effettuare Named Entity Recognition (NER) sui documenti in input.
+Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sui documenti in input.
 Le entità devono essere circondate dai seguenti indicatori:
 - Person (PER): (( ... ))
 - Location (LOC): [[ ... ]]
@@ -600,7 +600,7 @@ Le entità devono essere circondate dai seguenti indicatori:
 - Miscellaneous (MISC): << ... >>
 
 Devi seguire le seguenti linee guida:
-1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC.
+1. Un'annotazione è una sottostringa che può essere associata a una specifica etichetta, come PER, LOC, ORG o MISC. Non tutti i documenti contengono annotazioni.
 2. Le parole devono essere o devono contenere dei nomi propri:
   - "Lorenzo Bianchi" è composto da due nomi propri consecutivi che rappresentano una singola entità
   - I nomi potrebbero includere parole che non sono nomi propri, come ad esempio "Davide Ferri"

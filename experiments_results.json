@@ -254,14 +254,25 @@
         "f1": 0.861340021497
     },
     "hseBert-it-cased": {
-        "eval_loss": 0.046516772359609604,
-        "eval_precision": 0.9095982142857143,
-        "eval_recall": 0.9141895681435782,
-        "eval_f1": 0.9118881118881118,
-        "eval_accuracy": 0.9868465757413969,
-        "eval_runtime": 0.7869,
-        "eval_samples_per_second": 392.703,
-        "eval_steps_per_second": 25.418,
-        "epoch": 10.0
+        "eval_loss": 0.015528175048530102,
+        "eval_precision": 0.9558723693143245,
+        "eval_recall": 0.9696969696969697,
+        "eval_f1": 0.9627350427350428,
+        "eval_accuracy": 0.9964374361220616,
+        "eval_runtime": 1.0699,
+        "eval_samples_per_second": 840.237,
+        "eval_steps_per_second": 53.274,
+        "epoch": 50.0
+    },
+    "bert-base-italian-xxl-cased": {
+        "eval_loss": 0.058267317712306976,
+        "eval_precision": 0.8791271892047086,
+        "eval_recall": 0.9016489988221437,
+        "eval_f1": 0.8902456752434947,
+        "eval_accuracy": 0.984001893267069,
+        "eval_runtime": 1.5888,
+        "eval_samples_per_second": 1032.853,
+        "eval_steps_per_second": 64.829,
+        "epoch": 50.0
     }
 }
