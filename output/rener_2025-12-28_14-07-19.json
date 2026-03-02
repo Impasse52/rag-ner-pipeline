@@ -1,0 +1,1 @@
+{"model": "llama3.1:8b", "temperature": 0, "retriever_type": "bm25"}
