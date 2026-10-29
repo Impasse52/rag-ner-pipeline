@@ -12,3 +12,5 @@ models/
 data/
 src/prompts.py
 ollama_dl.sh
+data.zip
+output.zip
