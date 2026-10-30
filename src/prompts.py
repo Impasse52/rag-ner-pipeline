@@ -1,48 +1,3 @@
-# [OBSOLETE]
-old_ner_prompt = """Sono un eccellente linguista, specializzato nel rintracciare entità in testi giuridici. Il mio compito è di etichettare usando BIO tagging tutte le entità nominate in un testo come segue:
-
-- le persone sono etichettate tra doppie parentesi tonde: ((PER))
-- i luoghi sono etichettati tra doppie parentesi quadre: [[LOC]]
-- le organizzazioni sono etichettate tra doppie parentesi graffe: {{ORG}} 
-- le misc sono etichettate tra doppie parentesi angolari: <<MISC>>
-
-Ecco alcuni esempi:
-
-
-Input: Del resto l’atteggiamento di colpevole condivisione della stra tegia stragistica voluta dal Luca Rinaldi anche per l’eliminazione del dr Paolo Conti era provata non solo dal ruolo preminente che Andrea Moretti aveva continuato a rivestire nell’organizzazione anche dopo l’attentato di Marina Alta, alla luce dalle dichiarazioni di tutti i colla boranti ancora in libertà all’epoca, ma anche dalla sua partecipazione all’incontro nel quale circa un mese dopo la strage il Luca Rinaldi aveva fe steggiato in casa del Francesco Villa con un brindisi, in sieme a Alessandro Greco, Riccardo Galli, Stefano Romano, Davide Marchetti ed appunto il Andrea Moretti, la riuscita del barbaro crimine.
-Output: Del resto l’atteggiamento di colpevole condivisione della stra tegia stragistica voluta dal ((Luca Rinaldi)) anche per l’eliminazione del dr ((Paolo Conti)) era provata non solo dal ruolo preminente che ((Andrea Moretti)) aveva continuato a rivestire nell’organizzazione anche dopo l’attentato di [[Marina Alta]], alla luce dalle dichiarazioni di tutti i colla boranti ancora in libertà all’epoca, ma anche dalla sua partecipazione all’incontro nel quale circa un mese dopo la strage il ((Luca Rinaldi)) aveva fe steggiato in casa del ((Francesco Villa)) con un brindisi, in sieme a ((Alessandro Greco)), ((Riccardo Galli)), ((Stefano Romano)), ((Davide Marchetti)) ed appunto il ((Andrea Moretti)), la riuscita del barbaro crimine.
-
-Input: MESSINA Leonardo ha riferito che la commissione regionale di Consorzio Civico Tirrenico era costituita tra i rappresentanti delle province di Castelvento, Rocca Serena, Pian del Lago, San Felice al Piano, Monteluce e Colle Azzurro per decidere sulle questioni più rilevanti che superavano l’ambito territoriale di ciascuna provincia, all’interno della quale operavano le singole commissioni provinciali nonché per guidare e coordinare le attività delle varie province.
-Output: ((MESSINA Leonardo)) ha riferito che la commissione regionale di {{Consorzio Civico Tirrenico}} era costituita tra i rappresentanti delle province di [[Castelvento]], [[Rocca Serena]], [[Pian del Lago]], [[San Felice al Piano]], [[Monteluce]] e [[Colle Azzurro]] per decidere sulle questioni più rilevanti che superavano l’ambito territoriale di ciascuna provincia, all’interno della quale operavano le singole commissioni provinciali nonché per guidare e coordinare le attività delle varie province.
-
-Input: successo uno dei giorni che si aspettava l'arrivo del Dottore Paolo Conti Matteo De Santis Matteo De Santis praticamente la mattina quando stava per venire all'appuntamento con tutti noi, lui era con la sua macchina, ha avuto un incidente stradale, questo incidente l’ha avuto nello svincolo di Pietramonte, perché si esce dal, dall'autostrada in direzione Pietramonte, Marina Alta, e poi si gira in direzione Marina Alta, proprio in questo punto, dove lui aveva lo stop, non si è fermato allo stop e ha avuto un incidente, lui aveva allora una, una Automobili Levante, era una Automobili Levante bianca, mi pare, io non sono molto bravo nelle macchine piccole, comunque dovrebbe essere una, era un modello 205, mi pare era il modello 205.
-Output: successo uno dei giorni che si aspettava l'arrivo del Dottore ((Paolo Conti)) ((Matteo De Santis)) praticamente la mattina quando stava per venire all'appuntamento con tutti noi, lui era con la sua macchina, ha avuto un incidente stradale, questo incidente l’ha avuto nello svincolo di [[Pietramonte]], perché si esce dal, dall'autostrada in direzione [[Pietramonte]], [[Marina Alta]], e poi si gira in direzione [[Marina Alta]], proprio in questo punto, dove lui aveva lo stop, non si è fermato allo stop e ha avuto un incidente, lui aveva allora una, una Automobili Levante, era una Automobili Levante bianca, mi pare, io non sono molto bravo nelle macchine piccole, comunque dovrebbe essere una, era un modello 205, mi pare era il modello 205.
-
-Input: Rivafosca e dalla documentazione acquisita si evince che: il Nicola Romano gestì nei primi anni '60 un distributore di carburanti unitamente a Andrea Moretti; la deliberazione della Comune di Valleverde con cui venne accolta, per la parte di competenza del Agenzia Regionale per i Servizi, la domanda tendente ad ottenere la concessione per l’impianto dei distributori di carburante da collocare sul suolo pubblico di Via del Mercato all’angolo con Piazza delle Magnolie, fu adottata il 9 dicembre 1961, mentre era Sindaco Antonio Ferraro (in una adunanza della Consiglio Direttivo presieduta dal Vice Sindaco avv. Dario Pellegrini, con la presenza degli assessori effettivi Enrico Fontana, Simone Costa, Giorgio Lombardi, Fabio Mancini, Michele Rizzo, e degli assessori supplenti Giulia Bianchi Giulia Bianchi, Roberto Caruso, Claudio Serra, come si evince dalla documentazione acquisita all’udienza del 22 maggio 1996).
-Output: ((Rivafosca)) e dalla documentazione acquisita si evince che: il ((Nicola Romano)) gestì nei primi anni '60 un distributore di carburanti unitamente a ((Andrea Moretti)); la deliberazione della {{Comune di Valleverde}} con cui venne accolta, per la parte di competenza del {{Agenzia Regionale per i Servizi}}, la domanda tendente ad ottenere la concessione per l’impianto dei distributori di carburante da collocare sul suolo pubblico di Via del Mercato all’angolo con [[Piazza delle Magnolie]], fu adottata il 9 dicembre 1961, mentre era Sindaco ((Antonio Ferraro)) (in una adunanza della Consiglio Direttivo presieduta dal Vice Sindaco avv. ((Dario Pellegrini)), con la presenza degli assessori effettivi ((Enrico Fontana)), ((Simone Costa)), ((Giorgio Lombardi)), ((Fabio Mancini)), ((Michele Rizzo)), e degli assessori supplenti ((Giulia Bianchi Giulia Bianchi)), ((Roberto Caruso)), ((Claudio Serra)), come si evince dalla documentazione acquisita all’udienza del 22 maggio 1996)."""
-
-# [OBSOLETE] see: llm_ner_pred_Llama-3.1-8B-Instruct_2025-08-18_15-31-57
-good_llama_prompt = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
-Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
-Le entità devono essere circondate dai seguenti indicatori:
-- Person (PER): (( ... ))
-- Location (LOC): [[ ... ]]
-- Organization (ORG): {{ ... }}
-- Miscellaneous (MISC): << ... >>
-
-Non alterare la struttura del testo. Aggiungi solo le parentesi.  
-IMPORTANTE: Interrompi immediatamente l'output dopo il testo annotato. Non fornire spiegazioni o commenti.<|eot_id|><|start_header_id|>user<|end_header_id|>  
-
-Input: 
-Il mandamento di Valleverde Marco Bellini e Andrea Moretti Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a Consorzio Civico Tirrenico all’epoca della strage di Marina Alta, era emerso che il capomandamento di Valleverde o Borgoselva era Marco Bellini, il quale, essendo detenuto, aveva nominato come sostituto Andrea Moretti.<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-Output: 
-Il mandamento di [[Valleverde]] ((Marco Bellini)) e ((Andrea Moretti)) Alla stregua delle attendibili e convergenti dichiarazioni dei collaboranti affiliati a {{Consorzio Civico Tirrenico}} all’epoca della strage di [[Marina Alta]], era emerso che il capomandamento di [[Valleverde]] o [[Borgoselva]] era ((Marco Bellini)), il quale, essendo detenuto, aveva nominato come sostituto ((Andrea Moretti)).<|eot_id|>.
-"""
-
-# inspiration: https://www.universalner.org/guidelines/
-# best
 guidelines_llama3 = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
 Sei un annotatore NER. Devi effettuare Named Entity Recognition (NER) sul testo in input.
@@ -588,7 +543,6 @@ L'onorevole Antonio Ferraro lasci\u00f2 la corrente fanfaniana perch\u00e8 l'ono
 Output: 
 L'onorevole ((Antonio Ferraro)) lasci\u00f2 la corrente fanfaniana perch\u00e8 l'onorevole ((Elena Ricci)) non sopport\u00f2 di essere stato sopravanzato dai voti dell'onorevole ((Antonio Ferraro)).\n<|eot_id|>
 """
-
 
 guidelines_llama3_legal_lite = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
